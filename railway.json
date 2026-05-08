@@ -2,7 +2,7 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "nixpacks",
-    "buildCommand": "npm install && composer install && php artisan config:cache && npm run build"
+    "buildCommand": "composer install && php artisan config:cache"
   },
   "deploy": {
     "startCommand": "php artisan migrate --force && vendor/bin/heroku-php-apache2 public/",
