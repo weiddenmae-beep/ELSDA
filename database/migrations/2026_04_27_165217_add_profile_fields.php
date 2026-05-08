@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->text('address')->nullable()->after('phone');
             }
             if (!Schema::hasColumn('users', 'role')) {
-                $table->enum('role', ['customer', 'admin'])->default('customer')->after('address');
+                $table->string('role')->default('customer')->after('address');
             }
         });
     }

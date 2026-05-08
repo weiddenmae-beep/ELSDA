@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('type'); // order_confirmed | order_completed | order_cancelled | announcement
             $table->string('title');
             $table->text('message');
-            $table->unsignedBigInteger('order_id')->nullable(); // related order if any
+            $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
             $table->boolean('is_read')->default(false);
             $table->timestamps();
         });

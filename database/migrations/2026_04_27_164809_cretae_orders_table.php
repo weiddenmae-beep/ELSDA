@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2)->default(0);
 
             // Status: pending | confirmed | completed | cancelled
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
+            $table->string('status')->default('pending');
 
             $table->text('notes')->nullable(); // customer notes
             $table->text('admin_notes')->nullable(); // admin notes

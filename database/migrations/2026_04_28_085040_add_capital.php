@@ -10,7 +10,7 @@ return new class extends Migration
 {
     Schema::table('products', function (Blueprint $table) {
         if (!Schema::hasColumn('products', 'capital')) {
-            $table->decimal('capital', 10, 2)->default(0)->after('stock');
+            $table->decimal('capital', 10, 2)->default(0);
         }
     });
 }
