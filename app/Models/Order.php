@@ -19,6 +19,7 @@ class Order extends Model
         'total_amount',
         'status',
         'notes',
+        'cancel_reason',
         'admin_notes',
         'confirmed_at',
         'completed_at',

@@ -97,6 +97,11 @@ $dailyOrderCount = Order::where('status', 'completed')
         return $this->index();
     }
 
+    public function dashboardData(Request $request)
+    {
+        return $this->dashboardCheck($request);
+    }
+
     public function users()
     {
         $this->checkAdmin();
