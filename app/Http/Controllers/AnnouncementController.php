@@ -14,7 +14,7 @@ class AnnouncementController extends Controller
         $announcements = Announcement::latest()->get();
         $unreadNotifications = UserNotification::where('user_id', Auth::id())
             ->where('is_read', false)->count();
-        return view('customer.announcements', compact('announcements', 'unreadNotifications'));
+        return view('Customer.announcements', compact('announcements', 'unreadNotifications'));
     }
 
     public function adminIndex()

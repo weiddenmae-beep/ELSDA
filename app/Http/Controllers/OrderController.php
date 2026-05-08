@@ -41,7 +41,7 @@ class OrderController extends Controller
             ->count();
             $products = \App\Models\Product::all();
 
-        return view('customer.orders', compact(
+        return view('Customer.orders', compact(
         'pendingOrders',
         'confirmedOrders',
         'completedOrders',

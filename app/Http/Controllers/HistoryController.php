@@ -29,7 +29,7 @@ class HistoryController extends Controller
             ->where('is_read', false)
             ->count();
 
-        return view('customer.history', compact(
+        return view('Customer.history', compact(
             'completedOrders',
             'cancelledOrders',
             'unreadNotifications'

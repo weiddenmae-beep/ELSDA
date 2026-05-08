@@ -19,6 +19,6 @@ class ShopController extends Controller
             ->where('is_read', false)
             ->count();
 
-        return view('customer.shop', compact('products', 'cartCount', 'unreadNotifications'));
+        return view('Customer.shop', compact('products', 'cartCount', 'unreadNotifications'));
     }
 }

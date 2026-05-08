@@ -25,7 +25,7 @@ class CartController extends Controller
         ->where('is_read', false)
         ->count();
 
-    return view('customer.cart', compact('cartItems', 'products', 'unreadNotifications'));
+    return view('Customer.cart', compact('cartItems', 'products', 'unreadNotifications'));
 }
 
     /** Add item or update quantity if already in cart */
