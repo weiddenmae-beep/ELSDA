@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Cloudinary\Cloudinary;
+use Illuminate\Support\Facades\Http;
 
 class AdminProductController extends Controller
 {
@@ -14,6 +13,19 @@ class AdminProductController extends Controller
         if (auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized.');
         }
+    }
+
+    private function uploadToCloudinary($file): string
+    {
+        $response = Http::attach(
+            'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
+        )->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload', [
+            'api_key'   => env('CLOUDINARY_API_KEY'),
+            'timestamp' => time(),
+            'upload_preset' => 'ml_default',
+        ]);
+
+        return $response->json()['secure_url'];
     }
 
     public function index()
@@ -39,9 +51,7 @@ class AdminProductController extends Controller
         $data['is_available'] = ((float) $data['stock']) > 0;
 
         if ($request->hasFile('image')) {
-            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
-            $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath());
-            $data['image'] = $result['secure_url'];
+            $data['image'] = $this->uploadToCloudinary($request->file('image'));
         }
 
         Product::create($data);
@@ -68,9 +78,7 @@ class AdminProductController extends Controller
         $data['is_available'] = ((float) $data['stock']) > 0;
 
         if ($request->hasFile('image')) {
-            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
-            $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath());
-            $data['image'] = $result['secure_url'];
+            $data['image'] = $this->uploadToCloudinary($request->file('image'));
         }
 
         $product->update($data);
