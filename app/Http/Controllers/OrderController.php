@@ -53,13 +53,14 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'               => 'required|string|max:255',
-            'phone'              => 'required|string|max:20',
-            'address'            => 'required|string',
-            'items'              => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity'   => 'required|numeric|min:0.5',
-        ]);
+    'name'               => 'required|string|max:255',
+    'phone'              => 'required|string|max:20',
+    'address'            => 'required|string',
+    'pickup_date'        => 'required|date|after_or_equal:today',
+    'items'              => 'required|array|min:1',
+    'items.*.product_id' => 'required|exists:products,id',
+    'items.*.quantity'   => 'required|numeric|min:0.5',
+]);
 
         DB::beginTransaction();
         try {
@@ -100,7 +101,7 @@ class OrderController extends Controller
                 'customer_phone'   => $request->phone,
                 'customer_address' => $request->address,
                 'notes'            => $request->notes,
-                'pickup_date'      => Carbon::tomorrow()->toDateString(),
+                'pickup_date' => $request->pickup_date,
                 'total_amount'     => $totalAmount,
                 'status'           => 'pending',
             ]);
