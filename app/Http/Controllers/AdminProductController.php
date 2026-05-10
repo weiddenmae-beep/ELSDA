@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary\Cloudinary;
 
 class AdminProductController extends Controller
 {
@@ -18,9 +19,7 @@ class AdminProductController extends Controller
     public function index()
     {
         $this->checkAdmin();
-
         $products = Product::latest()->get();
-
         return view('admin.products', compact('products'));
     }
 
@@ -33,14 +32,16 @@ class AdminProductController extends Controller
             'price'   => 'required|numeric|min:0',
             'stock'   => 'required|numeric|min:0',
             'capital' => 'nullable|numeric|min:0',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image'   => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data['capital'] = $data['capital'] ?? 0;
         $data['is_available'] = ((float) $data['stock']) > 0;
 
         if ($request->hasFile('image')) {
-            $data['image'] = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+            $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath());
+            $data['image'] = $result['secure_url'];
         }
 
         Product::create($data);
@@ -60,17 +61,16 @@ class AdminProductController extends Controller
             'price'   => 'required|numeric|min:0',
             'stock'   => 'required|numeric|min:0',
             'capital' => 'nullable|numeric|min:0',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data['capital'] = $data['capital'] ?? 0;
         $data['is_available'] = ((float) $data['stock']) > 0;
 
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $data['image'] = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+            $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath());
+            $data['image'] = $result['secure_url'];
         }
 
         $product->update($data);
@@ -84,11 +84,6 @@ class AdminProductController extends Controller
     public function destroy(Product $product)
     {
         $this->checkAdmin();
-
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
-
         $product->delete();
 
         return response()->json([
