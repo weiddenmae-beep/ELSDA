@@ -342,7 +342,7 @@
               <tr id="row-{{ $product->id }}">
                 <td>
                   @if($product->image)
-                    <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}" class="prod-img-cell"/>
+                    <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/'.$product->image) }}" alt="{{ $product->name }}" class="prod-img-cell"/>
                   @else
                     <div class="prod-img-placeholder"><i class="fa-solid fa-fish"></i></div>
                   @endif

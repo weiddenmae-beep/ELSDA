@@ -466,7 +466,7 @@
       <div class="product-card">
         <div class="product-img">
           @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"/>
+            <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}"/>
           @else
             <i class="fa-solid {{ $product->icon ?? 'fa-fish' }}"></i>
           @endif

@@ -33,14 +33,14 @@ class AdminProductController extends Controller
             'price'   => 'required|numeric|min:0',
             'stock'   => 'required|numeric|min:0',
             'capital' => 'nullable|numeric|min:0',
-            'image'   => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data['capital'] = $data['capital'] ?? 0;
         $data['is_available'] = ((float) $data['stock']) > 0;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $data['image'] = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
         }
 
         Product::create($data);
@@ -70,7 +70,7 @@ class AdminProductController extends Controller
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $data['image'] = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
         }
 
         $product->update($data);
