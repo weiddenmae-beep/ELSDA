@@ -17,12 +17,18 @@ class AdminProductController extends Controller
 
     private function uploadToCloudinary($file): string
     {
+        $cloudName = env('CLOUDINARY_CLOUD_NAME');
+        $apiKey    = env('CLOUDINARY_API_KEY');
+        $apiSecret = env('CLOUDINARY_API_SECRET');
+        $timestamp = time();
+        $signature = sha1("timestamp={$timestamp}{$apiSecret}");
+
         $response = Http::attach(
             'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
-        )->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload', [
-            'api_key'   => env('CLOUDINARY_API_KEY'),
-            'timestamp' => time(),
-            'upload_preset' => 'ml_default',
+        )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
+            'api_key'   => $apiKey,
+            'timestamp' => $timestamp,
+            'signature' => $signature,
         ]);
 
         return $response->json()['secure_url'];
